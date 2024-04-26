@@ -1,0 +1,10 @@
+[project]
+
+name = "ifnt"
+version = "0.1.0"
+dependencies = [
+    "jax",
+    "jaxlib",
+]
+readme = "README.rst"
+description = "Execute runtime assertions, indexing checks, and more if `jax` code is not traced."
