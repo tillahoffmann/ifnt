@@ -8,7 +8,7 @@ assert_array_less = skip_if_traced(np.testing.assert_array_less)
 assert_allclose = skip_if_traced(np.testing.assert_allclose)
 
 
-def assert_shape(x: jnp.ndarray, shape: tuple) -> jnp.ndarray:
+def assert_shape(x: jnp.ndarray, shape: tuple) -> None:
     """
     Assert an array has the desired shape.
 
@@ -22,7 +22,6 @@ def assert_shape(x: jnp.ndarray, shape: tuple) -> jnp.ndarray:
     Example:
 
         >>> ifnt.testing.assert_shape(jnp.arange(3), (3,))
-        Array([0, 1, 2], dtype=int32)
         >>> ifnt.testing.assert_shape(jnp.arange(3), ())
         Traceback (most recent call last):
         ...
@@ -30,7 +29,6 @@ def assert_shape(x: jnp.ndarray, shape: tuple) -> jnp.ndarray:
     """
     actual = x.shape
     assert actual == shape, f"Expected shape `{shape}` but got `{actual}`."
-    return x
 
 
 @skip_if_traced
@@ -108,4 +106,29 @@ def assert_samples_close(
         raise AssertionError(
             f"Sample mean {mean} with standard error {stderr} is not consistent with "
             f"the expected value {expected} (z-score = {z})."
+        )
+
+
+@skip_if_traced
+def assert_allfinite(x: jnp.ndarray) -> None:
+    """
+    Assert all elements are finite.
+
+    Args:
+        x: Array to check.
+
+    Example:
+
+        >>> x = jnp.arange(3)
+        >>> ifnt.testing.assert_allfinite(x)
+        >>> ifnt.testing.assert_allfinite(jnp.log(x))
+        Traceback (most recent call last):
+        ...
+        AssertionError: Array with shape `(3,)` has 1 non-finite elements.
+    """
+    finite = jnp.isfinite(x)
+    if not finite.all():
+        n_not_finite = x.size - finite.sum()
+        raise AssertionError(
+            f"Array with shape `{x.shape}` has {n_not_finite} non-finite elements."
         )
