@@ -3,6 +3,8 @@ ifnt
 
 .. image:: https://github.com/tillahoffmann/ifnt/actions/workflows/build.yml/badge.svg
     :target: https://github.com/tillahoffmann/ifnt/actions/workflows/build.yml
+.. image:: https://readthedocs.org/projects/ifnt/badge/?version=latest
+    :target: https://ifnt.readthedocs.io/en/latest/?badge=latest
 
 Execute runtime assertions, indexing checks, and more if :code:`jax` code is not traced.
 
