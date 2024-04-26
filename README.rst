@@ -1,6 +1,9 @@
 ifnt
 ====
 
+.. image:: https://github.com/tillahoffmann/ifnt/actions/workflows/build.yml/badge.svg
+    :target: https://github.com/tillahoffmann/ifnt/actions/workflows/build.yml
+
 Execute runtime assertions, indexing checks, and more if :code:`jax` code is not traced.
 
 ifnt.util
