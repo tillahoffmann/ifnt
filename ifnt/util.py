@@ -128,3 +128,30 @@ class index_guard:
         cls.ACTIVE = active
         yield
         cls.ACTIVE = outer
+
+
+def broadcast_over_dict(func: F) -> F:
+    """
+    Broadcast a unitary function over values of a dictionary.
+    """
+    register = getattr(func, "register", None)
+    if not register:
+        raise TypeError("Function to broadcast must be a `singledispatch` function.")
+
+    @register
+    def wrapper(x: dict):
+        result = {}
+        for key, value in x.items():
+            try:
+                result[key] = func(value)
+            except Exception as ex:
+                message = f"{func} failed for key `{key}`."
+                if ex.args and isinstance(ex.args[0], str):
+                    ex.args = (f"{message} {ex.args[0]}",) + ex.args[1:]
+                else:
+                    ex.args = (message,) + ex.args
+                raise
+
+        return result
+
+    return func

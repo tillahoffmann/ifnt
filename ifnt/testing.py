@@ -2,7 +2,7 @@ import functools
 from jax import numpy as jnp
 from jax.scipy import stats
 import numpy as np
-from .util import skip_if_traced
+from .util import broadcast_over_dict, skip_if_traced
 
 
 assert_array_less = skip_if_traced(np.testing.assert_array_less)
@@ -32,6 +32,7 @@ def assert_shape(x: jnp.ndarray, shape: tuple) -> None:
     assert actual == shape, f"Expected shape `{shape}` but got `{actual}`."
 
 
+@broadcast_over_dict
 @skip_if_traced
 def assert_positive_definite(x: jnp.ndarray, atol: float = 0.0) -> None:
     """
@@ -111,6 +112,7 @@ def assert_samples_close(
         )
 
 
+@broadcast_over_dict
 @functools.singledispatch
 @skip_if_traced
 def assert_allfinite(x: jnp.ndarray) -> None:
@@ -131,7 +133,8 @@ def assert_allfinite(x: jnp.ndarray) -> None:
         >>> ifnt.testing.assert_allfinite({"a": x, "b": jnp.log(x)})
         Traceback (most recent call last):
         ...
-        AssertionError: Key `b`: Array with shape `(3,)` has 1 non-finite elements.
+        AssertionError: <function assert_allfinite at 0x...> failed for key `b`. Array
+        with shape `(3,)` has 1 non-finite elements.
     """
     finite = jnp.isfinite(x)
     if not finite.all():
@@ -139,12 +142,3 @@ def assert_allfinite(x: jnp.ndarray) -> None:
         raise AssertionError(
             f"Array with shape `{jnp.shape(x)}` has {n_not_finite} non-finite elements."
         )
-
-
-@assert_allfinite.register
-def _assert_allfinite_dict(x: dict) -> None:
-    for key, value in x.items():
-        try:
-            assert_allfinite(value)
-        except AssertionError as ex:
-            raise AssertionError(f"Key `{key}`: {ex}")
