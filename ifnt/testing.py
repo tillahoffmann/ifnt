@@ -33,6 +33,7 @@ def assert_shape(x: jnp.ndarray, shape: tuple) -> None:
 
 
 @broadcast_over_dict
+@functools.singledispatch
 @skip_if_traced
 def assert_positive_definite(x: jnp.ndarray, atol: float = 0.0) -> None:
     """
