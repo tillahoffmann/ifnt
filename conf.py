@@ -29,4 +29,11 @@ doctest_default_flags = (
 nitpick_ignore = [
     # https://github.com/sphinx-doc/sphinx/issues/10974.
     ("py:class", "ifnt.util.F"),
+    # Not documented by jax.
+    ("py:class", "jax._src.typing.SupportsDType"),
+    # Only a problem for Python 3.9.
+    ("py:class", "Array"),
+    ("py:class", "DTypeLikeFloat"),
+    ("py:class", "RealArray"),
+    ("py:class", "Shape"),
 ]

@@ -36,6 +36,8 @@ jobs:
       run: make lint
     - name: Run doctests
       run: make doctests
+      env:
+        JAX_TRACEBACK_FILTERING: off
     - name: Build documentation
       run: make docs
     - name: Run tests
