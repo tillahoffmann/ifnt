@@ -28,7 +28,7 @@ def assert_shape(x: jnp.ndarray, shape: tuple) -> None:
         ...
         AssertionError: Expected shape `()` but got `(3,)`.
     """
-    actual = x.shape
+    actual = jnp.shape(x)
     assert actual == shape, f"Expected shape `{shape}` but got `{actual}`."
 
 
@@ -78,31 +78,32 @@ def assert_samples_close(
     Example:
 
         >>> samples = jax.random.normal(jax.random.key(7), (1000,))
-        >>> ifnt.testing.assert_samples_close(samples, jnp.zeros(()))
-        >>> ifnt.testing.assert_samples_close(samples, jnp.ones(()))
+        >>> ifnt.testing.assert_samples_close(samples, 0.0)
+        >>> ifnt.testing.assert_samples_close(samples, 1.0)
         Traceback (most recent call last):
         ...
         AssertionError: Sample mean 0.01749... with standard error 0.030881... is not
         consistent with the expected value 1.0 (z-score = 31.81521...).
     """
     size = samples.shape[0]
-    assert samples.shape[1:] == expected.shape
+    assert_shape(expected, samples.shape[1:])
     mean = samples.mean(axis=0)
     stderr = samples.std(axis=0) / jnp.sqrt(size - 1)
 
     # We consider the ratio between the standard error and target variable. If this
     # ratio is large, then we can't test the quantity well because it's consistent with
     # noise. We exclude zeros because the notion of a relative error isn't well-defined.
-    fltr = expected != 0
-    scale = stderr[fltr] / expected[fltr]
-    n_weak = jnp.sum(scale > 3)
-    assert n_weak == 0
+    if (jnp.where(expected, stderr, 0) > expected).any():
+        raise ValueError(
+            "The standard error of the sampling distribution exceeds the expected "
+            "value. Consider increasing the sample size."
+        )
 
     z = (expected - mean) / stderr
     # Compute p-value and apply Bonferroni correction (see
     # https://en.wikipedia.org/wiki/Bonferroni_correction).
     p = stats.norm.cdf(z)
-    p = expected.size * jnp.minimum(p, 1 - p)
+    p = jnp.size(expected) * jnp.minimum(p, 1 - p)
     if (p < q).any():
         raise AssertionError(
             f"Sample mean {mean} with standard error {stderr} is not consistent with "
@@ -134,9 +135,9 @@ def assert_allfinite(x: jnp.ndarray) -> None:
     """
     finite = jnp.isfinite(x)
     if not finite.all():
-        n_not_finite = x.size - finite.sum()
+        n_not_finite = jnp.size(x) - finite.sum()
         raise AssertionError(
-            f"Array with shape `{x.shape}` has {n_not_finite} non-finite elements."
+            f"Array with shape `{jnp.shape(x)}` has {n_not_finite} non-finite elements."
         )
 
 
