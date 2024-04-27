@@ -32,6 +32,8 @@ nitpick_ignore = [
     # Not documented by jax.
     ("py:class", "jax._src.typing.SupportsDType"),
     # Only a problem for Python 3.9.
+    ("py:class", "Array"),
+    ("py:class", "DTypeLikeFloat"),
     ("py:class", "RealArray"),
     ("py:class", "Shape"),
 ]
