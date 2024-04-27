@@ -86,6 +86,11 @@ def assert_samples_close(
         ...
         AssertionError: Sample mean 0.01749... with standard error 0.030881... is not
         consistent with the expected value 1.0 (z-score = 31.81521...).
+        >>> ifnt.testing.assert_samples_close(samples, -1.0)
+        Traceback (most recent call last):
+        ...
+        AssertionError: Sample mean 0.01749... with standard error 0.03088... is not
+        consistent with the expected value -1.0 (z-score = -32.94792...).
     """
     size = samples.shape[0]
     assert_shape(expected, samples.shape[1:])
@@ -95,7 +100,7 @@ def assert_samples_close(
     # We consider the ratio between the standard error and target variable. If this
     # ratio is large, then we can't test the quantity well because it's consistent with
     # noise. We exclude zeros because the notion of a relative error isn't well-defined.
-    if (jnp.where(expected, stderr, 0) > expected).any():
+    if (jnp.where(expected, stderr, 0) > jnp.abs(expected)).any():
         raise ValueError(
             "The standard error of the sampling distribution exceeds the expected "
             "value. Consider increasing the sample size."
