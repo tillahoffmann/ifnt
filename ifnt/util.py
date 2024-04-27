@@ -62,6 +62,40 @@ def skip_if_traced(func: F) -> F:
     return _wrapper
 
 
+def raise_if_traced(func: F) -> F:
+    """
+    Raise an error if any of the function's arguments are traced.
+
+    Args:
+        func: Function to fail if any of its arguments are traced.
+
+    Example:
+
+        >>> @ifnt.raise_if_traced
+        ... def multiply(x):
+        ...     return 2 * x
+        >>>
+        >>> multiply(jnp.arange(3))
+        Array([0, 2, 4], dtype=int32)
+        >>> jax.jit(multiply)(jnp.arange(3))
+        Traceback (most recent call last):
+        ...
+        RuntimeError: Cannot execute `multiply` because one or more of its arguments are
+        traced.
+    """
+
+    @functools.wraps(func)
+    def _wrapper(*args, **kwargs):
+        if is_traced(*args) or is_traced(*kwargs.values()):
+            raise RuntimeError(
+                f"Cannot execute `{func.__name__}` because one or more of its "
+                "arguments are traced."
+            )
+        return func(*args, **kwargs)
+
+    return _wrapper
+
+
 class index_guard:
     """
     Safe indexing that checks out of bounds when not traced.
