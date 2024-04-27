@@ -132,18 +132,18 @@ class index_guard:
 
 def broadcast_over_dict(func: F) -> F:
     """
-    Broadcast a unitary function over values of a dictionary.
+    Broadcast a function over values of a dictionary.
     """
     register = getattr(func, "register", None)
     if not register:
         raise TypeError("Function to broadcast must be a `singledispatch` function.")
 
     @register
-    def wrapper(x: dict):
+    def wrapper(x: dict, *args, **kwargs):
         result = {}
         for key, value in x.items():
             try:
-                result[key] = func(value)
+                result[key] = func(value, *args, **kwargs)
             except Exception as ex:
                 message = f"{func} failed for key `{key}`."
                 if ex.args and isinstance(ex.args[0], str):
