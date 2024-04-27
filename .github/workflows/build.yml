@@ -38,3 +38,5 @@ jobs:
       run: make doctests
     - name: Build documentation
       run: make docs
+    - name: Run tests
+      run: make tests

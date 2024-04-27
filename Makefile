@@ -1,6 +1,6 @@
-.PHONY : docs doctests lint
+.PHONY : docs doctests lint tests
 
-all : docs doctests lint
+all : docs doctests lint tests
 
 requirements.txt : requirements.in pyproject.toml
 	pip-compile -v
@@ -14,3 +14,6 @@ doctests :
 docs :
 	rm -rf docs/_build
 	sphinx-build -nW . docs/_build
+
+tests :
+	pytest -v
