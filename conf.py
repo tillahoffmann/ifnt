@@ -29,4 +29,6 @@ doctest_default_flags = (
 nitpick_ignore = [
     # https://github.com/sphinx-doc/sphinx/issues/10974.
     ("py:class", "ifnt.util.F"),
+    # Not documented by jax.
+    ("py:class", "jax._src.typing.SupportsDType"),
 ]
