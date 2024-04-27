@@ -1,5 +1,7 @@
 .PHONY : docs doctests lint
 
+all : docs doctests lint
+
 requirements.txt : requirements.in pyproject.toml
 	pip-compile -v
 

@@ -1,3 +1,4 @@
+import functools
 from jax import numpy as jnp
 from jax.scipy import stats
 import numpy as np
@@ -109,13 +110,14 @@ def assert_samples_close(
         )
 
 
+@functools.singledispatch
 @skip_if_traced
 def assert_allfinite(x: jnp.ndarray) -> None:
     """
     Assert all elements are finite.
 
     Args:
-        x: Array to check.
+        x: Array or a dictionary of arrays to check.
 
     Example:
 
@@ -125,6 +127,10 @@ def assert_allfinite(x: jnp.ndarray) -> None:
         Traceback (most recent call last):
         ...
         AssertionError: Array with shape `(3,)` has 1 non-finite elements.
+        >>> ifnt.testing.assert_allfinite({"a": x, "b": jnp.log(x)})
+        Traceback (most recent call last):
+        ...
+        AssertionError: Key `b`: Array with shape `(3,)` has 1 non-finite elements.
     """
     finite = jnp.isfinite(x)
     if not finite.all():
@@ -132,3 +138,12 @@ def assert_allfinite(x: jnp.ndarray) -> None:
         raise AssertionError(
             f"Array with shape `{x.shape}` has {n_not_finite} non-finite elements."
         )
+
+
+@assert_allfinite.register
+def _assert_allfinite_dict(x: dict) -> None:
+    for key, value in x.items():
+        try:
+            assert_allfinite(value)
+        except AssertionError as ex:
+            raise AssertionError(f"Key `{key}`: {ex}")
