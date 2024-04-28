@@ -12,8 +12,6 @@ on:
 jobs:
   build:
     name: Build
-    permissions:
-        id-token: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
