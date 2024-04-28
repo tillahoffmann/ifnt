@@ -1,4 +1,6 @@
 -e file:.
 black
+build
 sphinx
 sphinx-book-theme
+twine

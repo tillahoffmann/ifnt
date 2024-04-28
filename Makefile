@@ -1,6 +1,6 @@
-.PHONY : docs doctests lint tests
+.PHONY : build docs doctests lint tests
 
-all : docs doctests lint tests
+all : build docs doctests lint tests
 
 requirements.txt : requirements.in pyproject.toml
 	pip-compile -v
@@ -17,3 +17,7 @@ docs :
 
 tests :
 	pytest -v
+
+build :
+	python -m build
+	twine check dist/*.tar.gz dist/*.whl

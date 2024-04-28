@@ -42,3 +42,5 @@ jobs:
       run: make docs
     - name: Run tests
       run: make tests
+    - name: Build the package
+      run: make build
