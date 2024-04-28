@@ -47,3 +47,11 @@ def test_disable() -> None:
     assert ifnt.util.IS_ENABLED
     with pytest.raises(AssertionError):
         ifnt.testing.assert_allclose(1, 2)
+
+
+def test_assert_samples_close() -> None:
+    with pytest.raises(ValueError, match="Consider increasing the sample size"):
+        ifnt.testing.assert_samples_close(jnp.arange(3), 0.001)
+    with pytest.warns(match="Consider increasing the sample size"):
+        ifnt.testing.assert_samples_close(jnp.arange(3), 0.001, on_weak="warn")
+    ifnt.testing.assert_samples_close(jnp.arange(3), 0.001, on_weak="ignore")
