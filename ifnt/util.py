@@ -3,12 +3,64 @@ import functools
 from jax.core import Tracer
 from jax import numpy as jnp
 import numpy as np
+import os
 from typing import Any, Callable, TypeVar
+
+
+IS_ENABLED = "IFNT_DISABLED" not in os.environ
+
+
+@contextlib.contextmanager
+def disable(do_disable: bool = True):
+    """
+    Disable all :code:`ifnt` behavior even if values are not traced.
+
+    Args:
+        do_disable: Disable :code:`ifnt` if truth-y.
+
+    Example:
+
+        >>> ifnt.testing.assert_allclose(1, 2)
+        Traceback (most recent call last):
+        ...
+        AssertionError:
+        Not equal to tolerance rtol=1e-07, atol=0
+        <BLANKLINE>
+        Mismatched elements: 1 / 1 (100%)
+        Max absolute difference: 1
+        Max relative difference: 0.5
+        x: array(1)
+        y: array(2)
+        >>> with ifnt.disable():
+        ...     ifnt.testing.assert_allclose(1, 2)
+        >>> ifnt.testing.assert_allclose(1, 2)
+        Traceback (most recent call last):
+        ...
+        AssertionError:
+        Not equal to tolerance rtol=1e-07, atol=0
+        <BLANKLINE>
+        Mismatched elements: 1 / 1 (100%)
+        Max absolute difference: 1
+        Max relative difference: 0.5
+        x: array(1)
+        y: array(2)
+    """
+    global IS_ENABLED
+    previous = IS_ENABLED
+    IS_ENABLED = not do_disable
+    yield
+    IS_ENABLED = previous
 
 
 def is_traced(*xs: Any) -> bool:
     """
     Return if any of the arguments are traced.
+
+    .. warning::
+
+        :func:`is_traced` always returns :code:`False` if the :code:`IFNT_DISABLED`
+        environment variable is set or the function is called within a :func:`disable`
+        context.
 
     Args:
         xs: Value or values to check.
@@ -26,7 +78,7 @@ def is_traced(*xs: Any) -> bool:
         >>> jax.jit(f)(x)
         Array(True, dtype=bool)
     """
-    return any(isinstance(x, Tracer) for x in xs)
+    return not IS_ENABLED or any(isinstance(x, Tracer) for x in xs)
 
 
 F = TypeVar("F", bound=Callable)
@@ -133,40 +185,23 @@ class index_guard:
 
         return self.x[index]
 
-    @classmethod
-    @contextlib.contextmanager
-    def set_active(cls, active: bool):
-        """
-        Activate or deactivate all index guards using a context manager.
-
-        Args:
-            active: If index guards are active.
-
-        Example:
-
-            >>> x = jnp.arange(3)
-            >>> guarded = ifnt.index_guard(x)
-            >>> guarded[7]
-            Traceback (most recent call last):
-            ...
-            IndexError: index 7 is out of bounds for axis 0 with size 3
-            >>> with ifnt.index_guard.set_active(False):
-            ...     guarded[7]
-            Array(2, dtype=int32)
-            >>> guarded[7]
-            Traceback (most recent call last):
-            ...
-            IndexError: index 7 is out of bounds for axis 0 with size 3
-        """
-        outer = cls.ACTIVE
-        cls.ACTIVE = active
-        yield
-        cls.ACTIVE = outer
-
 
 def broadcast_over_dict(func: F) -> F:
     """
     Broadcast a function over values of a dictionary.
+
+    Args:
+        func: Function to broadcast.
+
+    Example:
+
+        >>> from functools import singledispatch
+        >>> @ifnt.util.broadcast_over_dict
+        ... @singledispatch
+        ... def add_one(x):
+        ...     return x + 1
+        >>> add_one({"a": 1, "b": 2})
+        {'a': 2, 'b': 3}
     """
     register = getattr(func, "register", None)
     if not register:

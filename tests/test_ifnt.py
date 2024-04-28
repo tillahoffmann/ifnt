@@ -35,3 +35,15 @@ def test_ifnt(
 
     # Jitted should always pass (but may lead to undefined behavior).
     jax.jit(func)(*args, **kwargs)
+
+
+def test_disable() -> None:
+    with pytest.raises(AssertionError):
+        ifnt.testing.assert_allclose(1, 2)
+    assert ifnt.util.IS_ENABLED
+    with ifnt.disable():
+        assert not ifnt.util.IS_ENABLED
+        ifnt.testing.assert_allclose(1, 2)
+    assert ifnt.util.IS_ENABLED
+    with pytest.raises(AssertionError):
+        ifnt.testing.assert_allclose(1, 2)
