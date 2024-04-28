@@ -1,6 +1,6 @@
 [project]
 
-name = "ifnt"
+name = "jax-ifnt"
 version = "0.1.0"
 dependencies = [
     "jax",

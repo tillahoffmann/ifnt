@@ -34,7 +34,7 @@ Installation
 
 .. code-block:: bash
 
-    $ pip install ifnt
+    $ pip install jax-ifnt
 
 Relationship to chex
 --------------------
