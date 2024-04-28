@@ -29,12 +29,6 @@ Execute runtime assertions, indexing checks, and more if :code:`jax` code is not
     >>> jax.jit(safe_log)(-1)
     Array(nan, dtype=float32, weak_type=True)
 
-ifnt comprises three modules:
-
-- :mod:`ifnt.random` for stateful random number generation, obviating repeated :func:`jax.random.split` calls.
-- :mod:`ifnt.testing` for numpy-like runtime assertions for code that is not traced.
-- :mod:`ifnt.util` containing utility functions, such as decorators :func:`~ifnt.util.skip_if_traced` or :func:`~ifnt.util.raise_if_traced`.
-
 Installation
 ------------
 
