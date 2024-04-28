@@ -35,3 +35,8 @@ Installation
 .. code-block:: bash
 
     $ pip install ifnt
+
+Relationship to chex
+--------------------
+
+DeepMind's `chex <https://github.com/google-deepmind/chex>`_ provides similar, often complementary, assertions. While chex requires runtime assertions to be "functionalized" with :code:`chex.chexify`, ifnt will skip assertions in traced code. This facilitates, for example, verifying that indices are not out of bounds.
