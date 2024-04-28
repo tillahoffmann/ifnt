@@ -1,4 +1,6 @@
 __pycache__
-venv
+.DS_Store
 *.egg-info
+dist
 docs/_build
+venv*

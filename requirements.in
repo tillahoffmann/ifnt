@@ -1,4 +1,7 @@
 -e file:.
 black
+build
+pytest
 sphinx
 sphinx-book-theme
+twine
