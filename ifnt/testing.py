@@ -2,6 +2,7 @@ import functools
 from jax import numpy as jnp
 from jax.scipy import stats
 import numpy as np
+import warnings
 from .util import broadcast_over_dict, skip_if_traced
 
 
@@ -62,20 +63,26 @@ def assert_positive_definite(x: jnp.ndarray, atol: float = 0.0) -> None:
 
 @skip_if_traced
 def assert_samples_close(
-    samples: jnp.ndarray, expected: jnp.ndarray, q: float = 0.001
+    samples: jnp.ndarray,
+    expected: jnp.ndarray,
+    q: float = 0.001,
+    on_weak: str = "raise",
 ) -> None:
     """
     Assert that i.i.d samples are close to a target using a normal approximation of the
     sample mean. If samples are not scalars, a
     `Bonferroni correction <https://en.wikipedia.org/wiki/Bonferroni_correction>`__ is
     applied to the tail probability :code:`q` to avoid incorrect rejection of the null
-    hypothesis because of sampling noise.
+    hypothesis (that :code:`expected` is the mean of the distribution that generated
+    :code:`samples`) because of sampling noise.
 
     Args:
         samples: Samples with shape :code:`(n_samples, ...)`.
         expected: Target with shape :code:`(...)`.
         q: Tail probability where to reject the null that :code:`expected` is the mean
             of the distribution that generated :code:`samples`.
+        on_weak: Action if the sample size is too small to confidently reject the null
+            hypothesis.
 
     Example:
 
@@ -92,6 +99,10 @@ def assert_samples_close(
         AssertionError: Sample mean 0.01749... with standard error 0.03088... is not
         consistent with the expected value -1.0 (z-score = -32.94792...).
     """
+    allowed_actions = {"raise", "warn", "ignore"}
+    if on_weak not in allowed_actions:
+        raise ValueError(f"`on_weak` must be one of {allowed_actions}.")
+
     size = samples.shape[0]
     assert_shape(expected, samples.shape[1:])
     mean = samples.mean(axis=0)
@@ -100,11 +111,17 @@ def assert_samples_close(
     # We consider the ratio between the standard error and target variable. If this
     # ratio is large, then we can't test the quantity well because it's consistent with
     # noise. We exclude zeros because the notion of a relative error isn't well-defined.
-    if (jnp.where(expected, stderr, 0) > jnp.abs(expected)).any():
-        raise ValueError(
-            "The standard error of the sampling distribution exceeds the expected "
-            "value. Consider increasing the sample size."
+    ratio = jnp.where(expected, jnp.abs(expected / stderr), float("inf"))
+    if jnp.any(ratio < 1 / 3):
+        message = (
+            "The target value is small compared with the standard error of the "
+            f"samples; min(expected / stderr) = {ratio.min():.3g}. Consider increasing "
+            "the sample size or set `on_weak = 'ignore'`."
         )
+        if on_weak == "raise":
+            raise ValueError(message)
+        elif on_weak == "warn":
+            warnings.warn(message)
 
     z = (expected - mean) / stderr
     # Compute p-value and apply Bonferroni correction (see
