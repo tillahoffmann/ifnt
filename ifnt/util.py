@@ -185,40 +185,23 @@ class index_guard:
 
         return self.x[index]
 
-    @classmethod
-    @contextlib.contextmanager
-    def set_active(cls, active: bool):
-        """
-        Activate or deactivate all index guards using a context manager.
-
-        Args:
-            active: If index guards are active.
-
-        Example:
-
-            >>> x = jnp.arange(3)
-            >>> guarded = ifnt.index_guard(x)
-            >>> guarded[7]
-            Traceback (most recent call last):
-            ...
-            IndexError: index 7 is out of bounds for axis 0 with size 3
-            >>> with ifnt.index_guard.set_active(False):
-            ...     guarded[7]
-            Array(2, dtype=int32)
-            >>> guarded[7]
-            Traceback (most recent call last):
-            ...
-            IndexError: index 7 is out of bounds for axis 0 with size 3
-        """
-        outer = cls.ACTIVE
-        cls.ACTIVE = active
-        yield
-        cls.ACTIVE = outer
-
 
 def broadcast_over_dict(func: F) -> F:
     """
     Broadcast a function over values of a dictionary.
+
+    Args:
+        func: Function to broadcast.
+
+    Example:
+
+        >>> from functools import singledispatch
+        >>> @ifnt.util.broadcast_over_dict
+        ... @singledispatch
+        ... def add_one(x):
+        ...     return x + 1
+        >>> add_one({"a": 1, "b": 2})
+        {'a': 2, 'b': 3}
     """
     register = getattr(func, "register", None)
     if not register:
