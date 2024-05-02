@@ -3,10 +3,30 @@ import inspect
 from jax import numpy as jnp
 from jax import random
 from typing import Callable, TypeVar
-from .util import is_traced
 
 
 C = TypeVar("C", bound=Callable[..., jnp.ndarray])
+
+
+def keys(seed):
+    """
+    Random key generator.
+
+    Args:
+        seed: Initial seed.
+
+    Example:
+
+        >>> keys = ifnt.random.keys(9)
+        >>> next(keys)
+        Array((), dtype=key<fry>) overlaying: [4109519897 3077142452]
+        >>> next(keys)
+        Array((), dtype=key<fry>) overlaying: [3656642974 2192743943]
+    """
+    key = random.key(seed)
+    while True:
+        key, subkey = random.split(key)
+        yield subkey
 
 
 def _wrap_random(func: C) -> C:
@@ -19,7 +39,7 @@ def _wrap_random(func: C) -> C:
 
     @functools.wraps(func)
     def _inner(self: "JaxRandomState", *args, **kwargs):
-        return func(self.get_key(), *args, **kwargs)
+        return func(next(self.keys), *args, **kwargs)
 
     return _inner
 
@@ -44,25 +64,16 @@ class JaxRandomState:
         Array(-1.4622004, dtype=float32)
         >>> rng.normal()
         Array(2.0224454, dtype=float32)
-        >>> jax.jit(rng.normal)()
-        Traceback (most recent call last):
-        ...
-        RuntimeError: `JaxRandomState.get_key()` does not support jit compilation.
     """
 
     def __init__(self, seed: int) -> None:
-        self._key = random.PRNGKey(seed)
+        self.keys = keys(seed)
 
     def get_key(self) -> jnp.ndarray:
         """
         Get a random key and update the state.
         """
-        self._key, key = random.split(self._key)
-        if is_traced(key):
-            raise RuntimeError(
-                "`JaxRandomState.get_key()` does not support jit compilation."
-            )
-        return key
+        return next(self.keys)
 
     ball = _wrap_random(random.ball)
     bernoulli = _wrap_random(random.bernoulli)
