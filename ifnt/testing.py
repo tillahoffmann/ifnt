@@ -67,6 +67,8 @@ def assert_samples_close(
     expected: jnp.ndarray,
     q: float = 0.001,
     on_weak: str = "raise",
+    rtol: float = 1e-7,
+    atol: float = 0.0,
 ) -> None:
     """
     Assert that i.i.d samples are close to a target using a normal approximation of the
@@ -74,7 +76,9 @@ def assert_samples_close(
     `Bonferroni correction <https://en.wikipedia.org/wiki/Bonferroni_correction>`__ is
     applied to the tail probability :code:`q` to avoid incorrect rejection of the null
     hypothesis (that :code:`expected` is the mean of the distribution that generated
-    :code:`samples`) because of sampling noise.
+    :code:`samples`) because of sampling noise. The assertion also passes without
+    failure if all samples are close to the target as determined by :code:`rtol` and
+    :code:`atol`.
 
     Args:
         samples: Samples with shape :code:`(n_samples, ...)`.
@@ -83,6 +87,8 @@ def assert_samples_close(
             of the distribution that generated :code:`samples`.
         on_weak: Action if the sample size is too small to confidently reject the null
             hypothesis.
+        rtol: Relative tolerance.
+        atol: Absolute tolerance.
 
     Example:
 
@@ -128,7 +134,8 @@ def assert_samples_close(
     # https://en.wikipedia.org/wiki/Bonferroni_correction).
     p = stats.norm.cdf(z)
     p = jnp.size(expected) * jnp.minimum(p, 1 - p)
-    if (p < q).any():
+    within_tol = jnp.isclose(samples, expected, rtol=rtol, atol=atol).all(axis=0)
+    if ((p < q) & ~within_tol).any():
         raise AssertionError(
             f"Sample mean {mean} with standard error {stderr} is not consistent with "
             f"the expected value {expected} (z-score = {z})."

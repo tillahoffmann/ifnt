@@ -49,9 +49,17 @@ def test_disable() -> None:
         ifnt.testing.assert_allclose(1, 2)
 
 
-def test_assert_samples_close() -> None:
+def test_assert_samples_close_weak() -> None:
     with pytest.raises(ValueError, match="Consider increasing the sample size"):
         ifnt.testing.assert_samples_close(jnp.arange(3), 0.001)
     with pytest.warns(match="Consider increasing the sample size"):
         ifnt.testing.assert_samples_close(jnp.arange(3), 0.001, on_weak="warn")
     ifnt.testing.assert_samples_close(jnp.arange(3), 0.001, on_weak="ignore")
+
+
+def test_assert_samples_close_tol() -> None:
+    samples = ifnt.random.JaxRandomState(17).normal((1000,)) * 1e-6
+    ifnt.testing.assert_samples_close(samples, 0)
+    with pytest.raises(AssertionError):
+        ifnt.testing.assert_samples_close(samples, 1e-3)
+    ifnt.testing.assert_samples_close(samples, 1e-3, atol=1e-2)
