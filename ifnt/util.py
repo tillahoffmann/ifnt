@@ -27,10 +27,10 @@ def disable(do_disable: bool = True):
         Not equal to tolerance rtol=1e-07, atol=0
         <BLANKLINE>
         Mismatched elements: 1 / 1 (100%)
-        Max absolute difference: 1
-        Max relative difference: 0.5
-        x: array(1)
-        y: array(2)
+        Max absolute difference among violations: 1
+        Max relative difference among violations: 0.5
+        ACTUAL: array(1)
+        DESIRED: array(2)
         >>> with ifnt.disable():
         ...     ifnt.testing.assert_allclose(1, 2)
         >>> ifnt.testing.assert_allclose(1, 2)
@@ -40,10 +40,10 @@ def disable(do_disable: bool = True):
         Not equal to tolerance rtol=1e-07, atol=0
         <BLANKLINE>
         Mismatched elements: 1 / 1 (100%)
-        Max absolute difference: 1
-        Max relative difference: 0.5
-        x: array(1)
-        y: array(2)
+        Max absolute difference among violations: 1
+        Max relative difference among violations: 0.5
+        ACTUAL: array(1)
+        DESIRED: array(2)
     """
     global IS_ENABLED
     previous = IS_ENABLED
@@ -153,7 +153,7 @@ class index_guard:
     Safe indexing that checks out of bounds when not traced.
 
     Args:
-        x: Array to guard.
+        ACTUAL: array to guard.
 
     Example:
 
@@ -184,6 +184,9 @@ class index_guard:
             dummy[index]
 
         return self.x[index]
+
+    def __repr__(self) -> str:
+        return f"index_guard({self.x})"
 
 
 def broadcast_over_dict(func: F) -> F:

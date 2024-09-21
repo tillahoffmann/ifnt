@@ -6,23 +6,23 @@
 #
 -e file:.
     # via -r requirements.in
-accessible-pygments==0.0.4
+accessible-pygments==0.0.5
     # via pydata-sphinx-theme
-alabaster==0.7.16
+alabaster==1.0.0
     # via sphinx
-babel==2.14.0
+babel==2.16.0
     # via
     #   pydata-sphinx-theme
     #   sphinx
-backports-tarfile==1.1.1
+backports-tarfile==1.2.0
     # via jaraco-context
 beautifulsoup4==4.12.3
     # via pydata-sphinx-theme
-black==24.4.2
+black==24.8.0
     # via -r requirements.in
-build==1.2.1
+build==1.2.2
     # via -r requirements.in
-certifi==2024.2.2
+certifi==2024.8.30
     # via requests
 charset-normalizer==3.3.2
     # via requests
@@ -33,13 +33,13 @@ docutils==0.21.2
     #   pydata-sphinx-theme
     #   readme-renderer
     #   sphinx
-exceptiongroup==1.2.1
+exceptiongroup==1.2.2
     # via pytest
-idna==3.7
+idna==3.10
     # via requests
 imagesize==1.4.1
     # via sphinx
-importlib-metadata==7.1.0
+importlib-metadata==8.5.0
     # via
     #   keyring
     #   twine
@@ -47,17 +47,19 @@ iniconfig==2.0.0
     # via pytest
 jaraco-classes==3.4.0
     # via keyring
-jaraco-context==5.3.0
+jaraco-context==6.0.1
     # via keyring
-jaraco-functools==4.0.1
+jaraco-functools==4.0.2
     # via keyring
-jax==0.4.26
-    # via ifnt
-jaxlib==0.4.26
-    # via ifnt
-jinja2==3.1.3
+jax==0.4.33
+    # via jax-ifnt
+jaxlib==0.4.33
+    # via
+    #   jax
+    #   jax-ifnt
+jinja2==3.1.4
     # via sphinx
-keyring==25.2.0
+keyring==25.4.1
     # via twine
 markdown-it-py==3.0.0
     # via rich
@@ -65,19 +67,19 @@ markupsafe==2.1.5
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
-ml-dtypes==0.4.0
+ml-dtypes==0.5.0
     # via
     #   jax
     #   jaxlib
-more-itertools==10.2.0
+more-itertools==10.5.0
     # via
     #   jaraco-classes
     #   jaraco-functools
 mypy-extensions==1.0.0
     # via black
-nh3==0.2.17
+nh3==0.2.18
     # via readme-renderer
-numpy==1.26.4
+numpy==2.1.1
     # via
     #   jax
     #   jaxlib
@@ -86,7 +88,7 @@ numpy==1.26.4
     #   scipy
 opt-einsum==3.3.0
     # via jax
-packaging==24.0
+packaging==24.1
     # via
     #   black
     #   build
@@ -97,26 +99,26 @@ pathspec==0.12.1
     # via black
 pkginfo==1.10.0
     # via twine
-platformdirs==4.2.1
+platformdirs==4.3.6
     # via black
 pluggy==1.5.0
     # via pytest
-pydata-sphinx-theme==0.15.2
+pydata-sphinx-theme==0.15.4
     # via sphinx-book-theme
-pygments==2.17.2
+pygments==2.18.0
     # via
     #   accessible-pygments
     #   pydata-sphinx-theme
     #   readme-renderer
     #   rich
     #   sphinx
-pyproject-hooks==1.0.0
+pyproject-hooks==1.1.0
     # via build
-pytest==8.2.0
+pytest==8.3.3
     # via -r requirements.in
-readme-renderer==43.0
+readme-renderer==44.0
     # via twine
-requests==2.31.0
+requests==2.32.3
     # via
     #   requests-toolbelt
     #   sphinx
@@ -125,51 +127,50 @@ requests-toolbelt==1.0.0
     # via twine
 rfc3986==2.0.0
     # via twine
-rich==13.7.1
+rich==13.8.1
     # via twine
-scipy==1.13.0
+scipy==1.14.1
     # via
     #   jax
     #   jaxlib
 snowballstemmer==2.2.0
     # via sphinx
-soupsieve==2.5
+soupsieve==2.6
     # via beautifulsoup4
-sphinx==7.3.7
+sphinx==8.0.2
     # via
     #   -r requirements.in
     #   pydata-sphinx-theme
     #   sphinx-book-theme
-sphinx-book-theme==1.1.2
+sphinx-book-theme==1.1.3
     # via -r requirements.in
-sphinxcontrib-applehelp==1.0.8
+sphinxcontrib-applehelp==2.0.0
     # via sphinx
-sphinxcontrib-devhelp==1.0.6
+sphinxcontrib-devhelp==2.0.0
     # via sphinx
-sphinxcontrib-htmlhelp==2.0.5
+sphinxcontrib-htmlhelp==2.1.0
     # via sphinx
 sphinxcontrib-jsmath==1.0.1
     # via sphinx
-sphinxcontrib-qthelp==1.0.7
+sphinxcontrib-qthelp==2.0.0
     # via sphinx
-sphinxcontrib-serializinghtml==1.1.10
+sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
 tomli==2.0.1
     # via
     #   black
     #   build
-    #   pyproject-hooks
     #   pytest
     #   sphinx
-twine==5.0.0
+twine==5.1.1
     # via -r requirements.in
-typing-extensions==4.11.0
+typing-extensions==4.12.2
     # via
     #   black
     #   pydata-sphinx-theme
-urllib3==2.2.1
+urllib3==2.2.3
     # via
     #   requests
     #   twine
-zipp==3.18.1
+zipp==3.20.2
     # via importlib-metadata

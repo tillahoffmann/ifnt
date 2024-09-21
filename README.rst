@@ -19,11 +19,11 @@ Execute runtime assertions, indexing checks, and more if :code:`jax` code is not
     >>> safe_log(-1)
     Traceback (most recent call last):
     ...
-    AssertionError: Arrays are not less-ordered
+    AssertionError: Arrays are not strictly ordered `x < y`
     <BLANKLINE>
     Mismatched elements: 1 / 1 (100%)
-    Max absolute difference: 1
-    Max relative difference: 1.
+    Max absolute difference among violations: 1
+    Max relative difference among violations: 1.
     x: array(0)
     y: array(-1)
     >>> jax.jit(safe_log)(-1)
