@@ -1,3 +1,4 @@
+import builtins
 import contextlib
 import functools
 from jax.core import Tracer
@@ -227,3 +228,19 @@ def broadcast_over_dict(func: F) -> F:
         return result
 
     return func
+
+
+@skip_if_traced
+def print(*objects, sep=" ", end="\n", file=None, flush=False) -> None:
+    """
+    If none of the arguments are traced, print :code:`objects` separated by :code:`sep`
+    followed by :code:`end` to :code:`stdout` or a file.
+
+    Args:
+        *objects: Objects to print.
+        sep: Separator between objects.
+        end: End string.
+        file: Stream with :code:`write` method to print objects to.
+        flush: Forcibly flush the stream.
+    """
+    builtins.print(*objects, sep=sep, end=end, file=file, flush=flush)

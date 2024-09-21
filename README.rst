@@ -1,4 +1,4 @@
-🧪 ifnt
+🚀 ifnt
 =======
 
 .. image:: https://github.com/tillahoffmann/ifnt/actions/workflows/build.yml/badge.svg

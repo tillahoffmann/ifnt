@@ -63,3 +63,22 @@ def test_assert_samples_close_tol() -> None:
     with pytest.raises(AssertionError):
         ifnt.testing.assert_samples_close(samples, 1e-3)
     ifnt.testing.assert_samples_close(samples, 1e-3, atol=1e-2)
+
+
+def test_print(capsys: pytest.CaptureFixture) -> None:
+    def target(x):
+        ifnt.print("hello", x)
+        return x + 3
+
+    assert target(1) == 4
+    out, _ = capsys.readouterr()
+    assert out == "hello 1\n"
+
+    jitted = jax.jit(target)
+    assert jitted(1) == 4
+    out, _ = capsys.readouterr()
+    assert not out
+
+    assert target(2) == 5
+    out, _ = capsys.readouterr()
+    assert out == "hello 2\n"
