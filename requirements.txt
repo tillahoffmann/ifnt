@@ -8,8 +8,10 @@
     # via -r requirements.in
 accessible-pygments==0.0.5
     # via pydata-sphinx-theme
-alabaster==1.0.0
-    # via sphinx
+alabaster==0.7.16
+    # via
+    #   -r requirements.in
+    #   sphinx
 babel==2.16.0
     # via
     #   pydata-sphinx-theme
@@ -51,9 +53,11 @@ jaraco-context==6.0.1
     # via keyring
 jaraco-functools==4.0.2
     # via keyring
-jax==0.4.33
-    # via jax-ifnt
-jaxlib==0.4.33
+jax==0.4.30
+    # via
+    #   -r requirements.in
+    #   jax-ifnt
+jaxlib==0.4.30
     # via
     #   jax
     #   jax-ifnt
@@ -79,8 +83,9 @@ mypy-extensions==1.0.0
     # via black
 nh3==0.2.18
     # via readme-renderer
-numpy==2.1.1
+numpy==2.0.2
     # via
+    #   -r requirements.in
     #   jax
     #   jaxlib
     #   ml-dtypes
@@ -129,15 +134,16 @@ rfc3986==2.0.0
     # via twine
 rich==13.8.1
     # via twine
-scipy==1.14.1
+scipy==1.13.1
     # via
+    #   -r requirements.in
     #   jax
     #   jaxlib
 snowballstemmer==2.2.0
     # via sphinx
 soupsieve==2.6
     # via beautifulsoup4
-sphinx==8.0.2
+sphinx==7.4.7
     # via
     #   -r requirements.in
     #   pydata-sphinx-theme

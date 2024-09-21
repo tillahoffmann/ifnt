@@ -5,3 +5,9 @@ pytest
 sphinx
 sphinx-book-theme
 twine
+# Required for Python 3.9.
+alabaster<1
+jax<=0.4.30
+numpy<=2.0.2
+scipy<=1.13.1
+sphinx<=7.4.7
