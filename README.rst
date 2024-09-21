@@ -1,10 +1,12 @@
-ifnt
-====
+🧪 ifnt
+=======
 
 .. image:: https://github.com/tillahoffmann/ifnt/actions/workflows/build.yml/badge.svg
     :target: https://github.com/tillahoffmann/ifnt/actions/workflows/build.yml
 .. image:: https://readthedocs.org/projects/ifnt/badge/?version=latest
     :target: https://ifnt.readthedocs.io/en/latest/?badge=latest
+.. image:: https://img.shields.io/pypi/v/jax-ifnt
+    :target: https://pypi.org/project/jax-ifnt
 
 Execute runtime assertions, indexing checks, and more if :code:`jax` code is not traced.
 
