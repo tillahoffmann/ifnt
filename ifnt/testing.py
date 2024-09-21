@@ -15,7 +15,7 @@ def assert_shape(x: jnp.ndarray, shape: tuple) -> None:
     Assert an array has the desired shape.
 
     Args:
-        x: Array to check.
+        ACTUAL: array to check.
         shape: Desired shape.
 
     Returns:
@@ -150,7 +150,7 @@ def assert_allfinite(x: jnp.ndarray) -> None:
     Assert all elements are finite.
 
     Args:
-        x: Array or a dictionary of arrays to check.
+        ACTUAL: array or a dictionary of arrays to check.
 
     Example:
 
