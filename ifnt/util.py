@@ -1,9 +1,9 @@
 import builtins
 import contextlib
 import functools
+import jax._src.basearray
 from jax.core import Tracer
 from jax import numpy as jnp
-from jax._src.basearray import _IndexUpdateHelper
 import numpy as np
 import os
 from typing import Any, Callable, TypeVar
@@ -190,7 +190,7 @@ class index_guard:
         return self.x[index]
 
     @property
-    def at(self) -> _IndexUpdateHelper:
+    def at(self) -> "jax._src.basearray._IndexUpdateHelper":
         return self.__class__(self.x.at)
 
     def __repr__(self) -> str:
