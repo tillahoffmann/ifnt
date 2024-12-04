@@ -3,6 +3,7 @@ import contextlib
 import functools
 from jax.core import Tracer
 from jax import numpy as jnp
+from jax._src.basearray import _IndexUpdateHelper
 import numpy as np
 import os
 from typing import Any, Callable, TypeVar
@@ -165,6 +166,8 @@ class index_guard:
         Traceback (most recent call last):
         ...
         IndexError: index 7 is out of bounds for axis 0 with size 3
+        >>> ifnt.index_guard(x).at[1].set(7)
+        Array([0, 7, 2], dtype=int32)
     """
 
     ACTIVE = True
@@ -185,6 +188,10 @@ class index_guard:
             dummy[index]
 
         return self.x[index]
+
+    @property
+    def at(self) -> _IndexUpdateHelper:
+        return self.__class__(self.x.at)
 
     def __repr__(self) -> str:
         return f"index_guard({self.x})"
