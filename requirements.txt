@@ -30,6 +30,10 @@ charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via black
+coverage[toml]==7.6.8
+    # via
+    #   coverage
+    #   pytest-cov
 docutils==0.21.2
     # via
     #   pydata-sphinx-theme
@@ -120,6 +124,10 @@ pygments==2.18.0
 pyproject-hooks==1.1.0
     # via build
 pytest==8.3.3
+    # via
+    #   -r requirements.in
+    #   pytest-cov
+pytest-cov==6.0.0
     # via -r requirements.in
 readme-renderer==44.0
     # via twine
@@ -166,6 +174,7 @@ tomli==2.0.1
     # via
     #   black
     #   build
+    #   coverage
     #   pytest
     #   sphinx
 twine==5.1.1

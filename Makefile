@@ -16,7 +16,7 @@ docs :
 	sphinx-build -nW --keep-going . docs/_build
 
 tests :
-	pytest -v
+	pytest -v --cov=ifnt --cov-report=term-missing
 
 dist :
 	python -m build
