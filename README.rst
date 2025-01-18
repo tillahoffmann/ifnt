@@ -13,7 +13,7 @@ Execute runtime assertions, indexing checks, and more if :code:`jax` code is not
 Overview
 --------
 
-ifnt comprises three core modules, :mod:`ifnt.util` with utility functions, :mod:`ifnt.testing` for runtime assertions, and :mod:`ifnt.random` for stateful random number generation.
+ifnt comprises three core modules, :code:`ifnt.util` with utility functions, :code:`ifnt.testing` for runtime assertions, and :code:`ifnt.random` for stateful random number generation.
 
     >>> import ifnt
     >>> import jax
