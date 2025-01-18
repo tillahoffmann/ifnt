@@ -60,9 +60,9 @@ def is_traced(*xs: Any) -> bool:
 
     .. warning::
 
-        :func:`is_traced` always returns :code:`False` if the :code:`IFNT_DISABLED`
+        :func:`is_traced` always returns :code:`True` if the :code:`IFNT_DISABLED`
         environment variable is set or the function is called within a :func:`disable`
-        context.
+        context. Consequently any code that is not executed when traced is skipped.
 
     Args:
         xs: Value or values to check.
@@ -79,8 +79,22 @@ def is_traced(*xs: Any) -> bool:
         False
         >>> jax.jit(f)(x)
         Array(True, dtype=bool)
+        >>> with ifnt.disable():
+        ...     f(x)
+        True
     """
-    return not IS_ENABLED or any(isinstance(x, Tracer) for x in xs)
+    # Early termination if ifnt is disabled.
+    if not IS_ENABLED:
+        return True
+    # Check if any of the elements is a tracer.
+    if any(isinstance(x, Tracer) for x in xs):
+        return True
+    # Check if any flattened element is a tracer.
+    for x in xs:
+        leaves, _ = jax.tree.flatten(x)
+        if any(isinstance(leaf, Tracer) for leaf in leaves):
+            return True
+    return False
 
 
 F = TypeVar("F", bound=Callable)

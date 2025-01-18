@@ -10,6 +10,11 @@
 
 Execute runtime assertions, indexing checks, and more if :code:`jax` code is not traced.
 
+Overview
+--------
+
+ifnt comprises three core modules, :mod:`ifnt.util` with utility functions, :mod:`ifnt.testing` for runtime assertions, and :mod:`ifnt.random` for stateful random number generation.
+
     >>> import ifnt
     >>> import jax
     >>> from jax import numpy as jnp
