@@ -1,4 +1,5 @@
 import functools
+import jax
 from jax import numpy as jnp
 from jax.scipy import stats
 import numpy as np
@@ -8,6 +9,7 @@ from .util import broadcast_over_dict, skip_if_traced
 
 assert_array_less = skip_if_traced(np.testing.assert_array_less)
 assert_allclose = skip_if_traced(np.testing.assert_allclose)
+assert_array_equal = skip_if_traced(np.testing.assert_array_equal)
 
 
 def assert_shape(x: jnp.ndarray, shape: tuple) -> None:
@@ -150,7 +152,7 @@ def assert_allfinite(x: jnp.ndarray) -> None:
     Assert all elements are finite.
 
     Args:
-        ACTUAL: array or a dictionary of arrays to check.
+        x: Array or a dictionary of arrays to check.
 
     Example:
 
@@ -172,3 +174,162 @@ def assert_allfinite(x: jnp.ndarray) -> None:
         raise AssertionError(
             f"Array with shape `{jnp.shape(x)}` has {n_not_finite} non-finite elements."
         )
+
+
+def is_toeplitz(x: jnp.ndarray, rtol: float = 1e-7, atol: float = 0.0) -> jnp.ndarray:
+    """
+    Determine if a matrix is Toeplitz, i.e., has the same value on all diagonals.
+
+    Args:
+        x: Matrix or batch of matrices to check with shape (..., n, m).
+        rtol: Relative tolerance.
+        atol: Absolute tolerance.
+
+    Returns:
+        Boolean array with shape (...) indicating whether :code:`x` is Toeplitz.
+
+    Example:
+
+        >>> t = jsp.linalg.toeplitz(jnp.arange(3))
+        >>> t
+        Array([[0, 1, 2],
+               [1, 0, 1],
+               [2, 1, 0]], dtype=int32)
+        >>> ifnt.testing.is_toeplitz(t)
+        Array(True, dtype=bool)
+        >>> a = t.at[0, 0].set(7)
+        >>> a
+        Array([[7, 1, 2],
+               [1, 0, 1],
+               [2, 1, 0]], dtype=int32)
+        >>> ifnt.testing.is_toeplitz(a)
+        Array(False, dtype=bool)
+    """
+    batch_shape = x.shape[:-2]
+    result = jnp.ones(batch_shape, dtype=bool)
+    return jax.lax.fori_loop(
+        0,
+        x.shape[-2] - 1,
+        lambda i, result: result
+        & jnp.allclose(x[..., i, :-1], x[..., i + 1, 1:], rtol, atol),
+        result,
+    )
+
+
+@skip_if_traced
+def assert_toeplitz(x: jnp.ndarray, rtol: float = 1e-7, atol: float = 0.0) -> None:
+    """
+    Assert that a matrix is Toeplitz, i.e., has the same value on all diagonals.
+
+    Args:
+        x: Matrix or batch of matrices to check.
+        rtol: Relative tolerance.
+        atol: Absolute tolerance.
+
+
+    Example:
+
+        >>> t = jsp.linalg.toeplitz(jnp.arange(3))
+        >>> t
+        Array([[0, 1, 2],
+               [1, 0, 1],
+               [2, 1, 0]], dtype=int32)
+        >>> ifnt.testing.assert_toeplitz(t)
+        >>> a = t.at[0, 0].set(7)
+        >>> a
+        Array([[7, 1, 2],
+               [1, 0, 1],
+               [2, 1, 0]], dtype=int32)
+        >>> ifnt.testing.assert_toeplitz(a)
+        Traceback (most recent call last):
+        ...
+        AssertionError:
+        Arrays are not equal
+        Matrix is not Toeplitz.
+        Mismatched elements: 1 / 1 (100%)
+        ACTUAL: array(False)
+        DESIRED: array(True)
+    """
+    assert_array_equal(is_toeplitz(x, rtol, atol), True, "Matrix is not Toeplitz.")
+
+
+def is_circulant(x: jnp.ndarray, rtol: float = 1e-7, atol: float = 0.0) -> jnp.ndarray:
+    """
+    Determine if a matrix is circulant, i.e., has periodic boundary conditions and the
+    same values on all diagonals.
+
+    Args:
+        x: Matrix or batch of matrices to check with shape (..., n, m).
+        rtol: Relative tolerance.
+        atol: Absolute tolerance.
+
+    Returns:
+        Boolean array with shape (...) indicating whether :code:`x` is circulant.
+
+    Example:
+
+        >>> c = jsp.linalg.toeplitz(jnp.array([2, 1, 0, 1]))
+        >>> c
+        Array([[2, 1, 0, 1],
+               [1, 2, 1, 0],
+               [0, 1, 2, 1],
+               [1, 0, 1, 2]], dtype=int32)
+        >>> ifnt.testing.is_circulant(c)
+        Array(True, dtype=bool)
+        >>>
+        >>> t = jsp.linalg.toeplitz(jnp.arange(3))
+        >>> t
+        Array([[0, 1, 2],
+               [1, 0, 1],
+               [2, 1, 0]], dtype=int32)
+        >>> ifnt.testing.is_circulant(t)
+        Array(False, dtype=bool)
+    """
+    batch_shape = x.shape[:-2]
+    result = jnp.ones(batch_shape, dtype=bool)
+    return jax.lax.fori_loop(
+        0,
+        x.shape[-2] - 1,
+        lambda i, result: result
+        & jnp.allclose(x[..., i], jnp.roll(x[..., i + 1], -1, axis=-1), rtol, atol),
+        result,
+    )
+
+
+@skip_if_traced
+def assert_circulant(x: jnp.ndarray, rtol: float = 1e-7, atol: float = 0.0) -> None:
+    """
+    Assert that a matrix is circulant, i.e., has periodic boundary conditions and the
+    same values on all diagonals.
+
+    Args:
+        x: Matrix or batch of matrices to check.
+        rtol: Relative tolerance.
+        atol: Absolute tolerance.
+
+    Example:
+
+        >>> c = jsp.linalg.toeplitz(jnp.array([2, 1, 0, 1]))
+        >>> c
+        Array([[2, 1, 0, 1],
+               [1, 2, 1, 0],
+               [0, 1, 2, 1],
+               [1, 0, 1, 2]], dtype=int32)
+        >>> ifnt.testing.assert_circulant(c)
+        >>>
+        >>> t = jsp.linalg.toeplitz(jnp.arange(3))
+        >>> t
+        Array([[0, 1, 2],
+               [1, 0, 1],
+               [2, 1, 0]], dtype=int32)
+        >>> ifnt.testing.assert_circulant(t)
+        Traceback (most recent call last):
+        ...
+        AssertionError:
+        Arrays are not equal
+        Matrix is not circulant.
+        Mismatched elements: 1 / 1 (100%)
+        ACTUAL: array(False)
+        DESIRED: array(True)
+    """
+    assert_array_equal(is_circulant(x, rtol, atol), True, "Matrix is not circulant.")
