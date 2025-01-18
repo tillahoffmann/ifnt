@@ -3,4 +3,6 @@
 .. toctree::
     :hidden:
 
-    docs/reference
+    docs/random
+    docs/testing
+    docs/util
