@@ -22,6 +22,7 @@ doctest_global_setup = """
 import ifnt
 import jax
 from jax import numpy as jnp
+from jax import scipy as jsp
 """
 doctest_default_flags = (
     doctest.ELLIPSIS | doctest.DONT_ACCEPT_TRUE_FOR_1 | doctest.NORMALIZE_WHITESPACE

@@ -5,6 +5,7 @@ Functions are primarily tested in doctests. This test suite only tests edge case
 import ifnt
 import jax
 from jax import numpy as jnp
+from jax import scipy as jsp
 import pytest
 from typing import Callable, Type
 
@@ -82,3 +83,34 @@ def test_print(capsys: pytest.CaptureFixture) -> None:
     assert target(2) == 5
     out, _ = capsys.readouterr()
     assert out == "hello 2\n"
+
+
+def test_toeplitz() -> None:
+    toeplitz = (
+        jsp.linalg.toeplitz(jnp.arange(3), -jnp.arange(5))
+        + jnp.arange(7)[:, None, None]
+    )
+    is_toeplitz = ifnt.testing.is_toeplitz(toeplitz)
+    assert is_toeplitz.shape == (7,)
+    assert is_toeplitz.all()
+    ifnt.testing.assert_toeplitz(toeplitz)
+
+    not_toeplitz = toeplitz.at[0, 1].set(0)
+    with pytest.raises(AssertionError, match="Matrix is not Toeplitz."):
+        ifnt.testing.assert_toeplitz(not_toeplitz)
+
+
+def test_circulant() -> None:
+    circulant = (
+        jsp.linalg.toeplitz(jnp.array([2, 1, 0, 1])) + jnp.arange(7)[:, None, None]
+    )
+    is_circulant = ifnt.testing.is_circulant(circulant)
+    assert is_circulant.shape == (7,)
+    assert is_circulant.all()
+    ifnt.testing.assert_circulant(circulant)
+
+    toeplitz_not_circulant = (
+        jsp.linalg.toeplitz(jnp.arange(3)) + jnp.arange(7)[:, None, None]
+    )
+    with pytest.raises(AssertionError, match="Matrix is not circulant."):
+        ifnt.testing.assert_circulant(toeplitz_not_circulant)
