@@ -20,17 +20,17 @@ backports-tarfile==1.2.0
     # via jaraco-context
 beautifulsoup4==4.12.3
     # via pydata-sphinx-theme
-black==24.8.0
+black==24.10.0
     # via -r requirements.in
-build==1.2.2
+build==1.2.2.post1
     # via -r requirements.in
-certifi==2024.8.30
+certifi==2024.12.14
     # via requests
-charset-normalizer==3.3.2
+charset-normalizer==3.4.1
     # via requests
-click==8.1.7
+click==8.1.8
     # via black
-coverage[toml]==7.6.8
+coverage[toml]==7.6.10
     # via
     #   coverage
     #   pytest-cov
@@ -46,16 +46,14 @@ idna==3.10
 imagesize==1.4.1
     # via sphinx
 importlib-metadata==8.5.0
-    # via
-    #   keyring
-    #   twine
+    # via keyring
 iniconfig==2.0.0
     # via pytest
 jaraco-classes==3.4.0
     # via keyring
 jaraco-context==6.0.1
     # via keyring
-jaraco-functools==4.0.2
+jaraco-functools==4.1.0
     # via keyring
 jax==0.4.30
     # via
@@ -65,27 +63,27 @@ jaxlib==0.4.30
     # via
     #   jax
     #   jax-ifnt
-jinja2==3.1.4
+jinja2==3.1.5
     # via sphinx
-keyring==25.4.1
+keyring==25.6.0
     # via twine
 markdown-it-py==3.0.0
     # via rich
-markupsafe==2.1.5
+markupsafe==3.0.2
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
-ml-dtypes==0.5.0
+ml-dtypes==0.5.1
     # via
     #   jax
     #   jaxlib
-more-itertools==10.5.0
+more-itertools==10.6.0
     # via
     #   jaraco-classes
     #   jaraco-functools
 mypy-extensions==1.0.0
     # via black
-nh3==0.2.18
+nh3==0.2.20
     # via readme-renderer
 numpy==2.0.2
     # via
@@ -93,37 +91,36 @@ numpy==2.0.2
     #   jax
     #   jaxlib
     #   ml-dtypes
-    #   opt-einsum
     #   scipy
-opt-einsum==3.3.0
+opt-einsum==3.4.0
     # via jax
-packaging==24.1
+packaging==24.2
     # via
     #   black
     #   build
-    #   pydata-sphinx-theme
     #   pytest
     #   sphinx
+    #   twine
 pathspec==0.12.1
     # via black
-pkginfo==1.10.0
+pkginfo==1.12.0
     # via twine
 platformdirs==4.3.6
     # via black
 pluggy==1.5.0
     # via pytest
-pydata-sphinx-theme==0.15.4
+pydata-sphinx-theme==0.16.1
     # via sphinx-book-theme
-pygments==2.18.0
+pygments==2.19.1
     # via
     #   accessible-pygments
     #   pydata-sphinx-theme
     #   readme-renderer
     #   rich
     #   sphinx
-pyproject-hooks==1.1.0
+pyproject-hooks==1.2.0
     # via build
-pytest==8.3.3
+pytest==8.3.4
     # via
     #   -r requirements.in
     #   pytest-cov
@@ -140,7 +137,7 @@ requests-toolbelt==1.0.0
     # via twine
 rfc3986==2.0.0
     # via twine
-rich==13.8.1
+rich==13.9.4
     # via twine
 scipy==1.13.1
     # via
@@ -170,22 +167,23 @@ sphinxcontrib-qthelp==2.0.0
     # via sphinx
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
-tomli==2.0.1
+tomli==2.2.1
     # via
     #   black
     #   build
     #   coverage
     #   pytest
     #   sphinx
-twine==5.1.1
+twine==6.0.1
     # via -r requirements.in
 typing-extensions==4.12.2
     # via
     #   black
     #   pydata-sphinx-theme
-urllib3==2.2.3
+    #   rich
+urllib3==2.3.0
     # via
     #   requests
     #   twine
-zipp==3.20.2
+zipp==3.21.0
     # via importlib-metadata
