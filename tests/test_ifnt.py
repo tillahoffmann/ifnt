@@ -2,6 +2,7 @@
 Functions are primarily tested in doctests. This test suite only tests edge cases.
 """
 
+import functools
 import ifnt
 import jax
 from jax import numpy as jnp
@@ -114,3 +115,20 @@ def test_circulant() -> None:
     )
     with pytest.raises(AssertionError, match="Matrix is not circulant."):
         ifnt.testing.assert_circulant(toeplitz_not_circulant)
+
+
+@pytest.mark.parametrize("jit_value", [False, True])
+@pytest.mark.parametrize("jit_index", [False, True])
+def test_index_guard_arg_jitted(jit_value: bool, jit_index: bool) -> None:
+    value = jnp.arange(9)
+    idx = jnp.arange(3, 7)
+
+    def fn(value, idx):
+        return ifnt.index_guard(value)[idx]
+
+    kwargs = {"value": value, "idx": idx}
+    if not jit_value:
+        fn = functools.partial(fn, value=kwargs.pop("value"))
+    if not jit_index:
+        fn = functools.partial(fn, idx=kwargs.pop("idx"))
+    ifnt.testing.assert_allclose(jax.jit(fn)(**kwargs), idx)

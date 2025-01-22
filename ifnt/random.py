@@ -39,7 +39,7 @@ def _wrap_random(func: C) -> C:
 
     @functools.wraps(func)
     def _inner(self: "JaxRandomState", *args, **kwargs):
-        return func(next(self.keys), *args, **kwargs)
+        return func(self.get_key(), *args, **kwargs)
 
     return _inner
 
