@@ -169,7 +169,7 @@ class index_guard:
     Safe indexing that checks out of bounds when not traced.
 
     Args:
-        ACTUAL: array to guard.
+        x: Array to guard.
 
     Example:
 
@@ -192,7 +192,7 @@ class index_guard:
     def __getitem__(self, index):
         # Get the underlying array if `x` is an index helper obtained using `x.at`.
         array: jnp.ndarray = getattr(self.x, "array", self.x)
-        if not is_traced(array) and self.ACTIVE:
+        if not is_traced(array, index) and self.ACTIVE:
             # Create a dummy array with the right shape.
             shape = array.shape
             strides = (0,) * array.ndim
