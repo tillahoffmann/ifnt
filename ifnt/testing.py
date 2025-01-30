@@ -205,6 +205,7 @@ def is_toeplitz(x: jnp.ndarray, rtol: float = 1e-7, atol: float = 0.0) -> jnp.nd
         >>> ifnt.testing.is_toeplitz(a)
         Array(False, dtype=bool)
     """
+    assert x.ndim >= 2, "Input must have at least two dimensions."
     batch_shape = x.shape[:-2]
     result = jnp.ones(batch_shape, dtype=bool)
     return jax.lax.fori_loop(
@@ -285,6 +286,8 @@ def is_circulant(x: jnp.ndarray, rtol: float = 1e-7, atol: float = 0.0) -> jnp.n
         >>> ifnt.testing.is_circulant(t)
         Array(False, dtype=bool)
     """
+    assert x.ndim >= 2, "Input must have at least two dimensions."
+    assert x.shape[-2] == x.shape[-1], "Input must be square."
     batch_shape = x.shape[:-2]
     result = jnp.ones(batch_shape, dtype=bool)
     return jax.lax.fori_loop(
