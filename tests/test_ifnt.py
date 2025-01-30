@@ -8,6 +8,7 @@ import jax
 from jax import numpy as jnp
 from jax import scipy as jsp
 import pytest
+from time import sleep
 from typing import Callable, Type
 
 
@@ -132,3 +133,20 @@ def test_index_guard_arg_jitted(jit_value: bool, jit_index: bool) -> None:
     if not jit_index:
         fn = functools.partial(fn, idx=kwargs.pop("idx"))
     ifnt.testing.assert_allclose(jax.jit(fn)(**kwargs), idx)
+
+
+def test_time_based_seed() -> None:
+    # Try twice because we might just be at the boundary of a second.
+    close = False
+    for _ in range(2):
+        x1 = ifnt.random.JaxRandomState().normal()
+        x2 = ifnt.random.JaxRandomState().normal()
+        if jnp.allclose(x1, x2):
+            close = True
+            break
+    assert close
+
+    # Sleep and try again to get a different value.
+    sleep(1.1)
+    x3 = ifnt.random.JaxRandomState().normal()
+    assert not jnp.allclose(x1, x3)

@@ -2,7 +2,8 @@ import functools
 import inspect
 from jax import numpy as jnp
 from jax import random
-from typing import Callable, TypeVar
+from time import time
+from typing import Callable, Optional, TypeVar
 
 
 C = TypeVar("C", bound=Callable[..., jnp.ndarray])
@@ -50,7 +51,8 @@ class JaxRandomState:
     random state handling.
 
     Args:
-        seed: Initial random number generator seed.
+        seed: Initial random number generator seed or :code:`None` to use a time-based
+            seed.
 
     .. warning::
 
@@ -66,7 +68,9 @@ class JaxRandomState:
         Array(2.0224454, dtype=float32)
     """
 
-    def __init__(self, seed: int) -> None:
+    def __init__(self, seed: Optional[int] = None) -> None:
+        if seed is None:
+            seed = int(time())
         self.keys = keys(seed)
 
     def get_key(self) -> jnp.ndarray:
