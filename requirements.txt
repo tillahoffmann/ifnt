@@ -20,7 +20,7 @@ backports-tarfile==1.2.0
     # via jaraco-context
 beautifulsoup4==4.12.3
     # via pydata-sphinx-theme
-black==24.10.0
+black==25.1.0
     # via -r requirements.in
 build==1.2.2.post1
     # via -r requirements.in
@@ -31,9 +31,7 @@ charset-normalizer==3.4.1
 click==8.1.8
     # via black
 coverage[toml]==7.6.10
-    # via
-    #   coverage
-    #   pytest-cov
+    # via pytest-cov
 docutils==0.21.2
     # via
     #   pydata-sphinx-theme
@@ -41,11 +39,13 @@ docutils==0.21.2
     #   sphinx
 exceptiongroup==1.2.2
     # via pytest
+id==1.5.0
+    # via twine
 idna==3.10
     # via requests
 imagesize==1.4.1
     # via sphinx
-importlib-metadata==8.5.0
+importlib-metadata==8.6.1
     # via keyring
 iniconfig==2.0.0
     # via pytest
@@ -103,8 +103,6 @@ packaging==24.2
     #   twine
 pathspec==0.12.1
     # via black
-pkginfo==1.12.0
-    # via twine
 platformdirs==4.3.6
     # via black
 pluggy==1.5.0
@@ -130,6 +128,7 @@ readme-renderer==44.0
     # via twine
 requests==2.32.3
     # via
+    #   id
     #   requests-toolbelt
     #   sphinx
     #   twine
@@ -174,7 +173,7 @@ tomli==2.2.1
     #   coverage
     #   pytest
     #   sphinx
-twine==6.0.1
+twine==6.1.0
     # via -r requirements.in
 typing-extensions==4.12.2
     # via
