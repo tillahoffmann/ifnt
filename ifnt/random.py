@@ -2,6 +2,7 @@ import functools
 import inspect
 from jax import numpy as jnp
 from jax import random
+import re
 from time import time
 from typing import Callable, Optional, TypeVar
 
@@ -41,6 +42,10 @@ def _wrap_random(func: C) -> C:
     @functools.wraps(func)
     def _inner(self: "JaxRandomState", *args, **kwargs):
         return func(self.get_key(), *args, **kwargs)
+
+    _inner.__doc__ = re.sub(
+        r"\s*key: a PRNG key used as the random key.", "", func.__doc__
+    )
 
     return _inner
 
