@@ -23,6 +23,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Check README is up to date
+      run: |
+        mv README.rst README.copy
+        make README.rst
+        diff README.rst README.copy || echo "README.rst is out of date. Run 'make README.rst' to update it."
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
